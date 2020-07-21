@@ -1,0 +1,65 @@
+﻿@using HwProj.ViewModels
+@model HwProj.ViewModels.IndexViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Teachers</h2>
+
+
+@Html.Partial("_CreatePartial", Model.CreateTeacherViewModel)
+
+
+<table class="table">
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Subject
+        </th>
+        <th>Options</th>
+    </tr>
+
+    @foreach (var item in Model.Teachers)
+    {
+        <tr data-teacher-id="@item.Id">
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.Subject.Title)
+            </td>*@
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                <button class="btn-danger deleteTeacherBtn">Delete</button>
+            </td>
+        </tr>
+    }
+
+</table>
+
+
+@section scripts
+{
+    <script>
+        onDeleteHandler = (e) => {
+            if (e.target.classList.contains("deleteTeacherBtn")) {
+                var isConfirmed = confirm("Are you sure?");
+                if (!isConfirmed)
+                    e.preventDefault();
+                else
+                {
+                    var parent = e.target.closest("[data-teacher-id]");
+                    var id = parent.dataset.teacherId;
+                    window.location.href = '@Url.Action("Delete", "Teachers")/' + id;
+                }
+            }
+        }
+
+        var table = document.querySelector(".table");
+        table.addEventListener("click", onDeleteHandler);
+    </script>
+}
